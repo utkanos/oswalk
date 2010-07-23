@@ -1,0 +1,39 @@
+#!/usr/bin/python
+
+import os, mimetypes, magic, datetime
+
+######### Options section begin #########
+DATE = datetime.datetime.now().strftime("%b-%A-%I_%M%p")            # Current date/time stamp
+TOP = '/var/tmp/test/'                                              # Set path here to crawl (SET THIS BEFORE RUNNING!)
+HOME = os.getenv('HOME')                                            # Home directory
+LOGS = HOME + "/oswalklogs/"                                              # Log directory
+if not os.path.isdir(LOGS):                                         # Set logging path 
+	os.makedirs(LOGS)
+os.chdir(HOME)                                                      # Set proper pwd
+ERRORFILE=file(LOGS + "ERRORFILE.txt" , 'w')                        # Error file
+OUTFILE=file(LOGS + DATE +  ".txt", 'w')                            # Output file
+######### Options section end #########
+
+d={}								    # Create dictionary
+magic = magic.Magic(mime=True)					    # Magic file MIME search
+for root, dirs, files in os.walk(TOP):
+        for name in files:
+                filename = os.path.join(root,name)
+                if os.access(filename, os.R_OK):		    # Prevent magic from puking on perm denied
+                        m=magic.from_file(filename)
+			if d.has_key(m):
+				d[m].append(filename)
+			else:
+				d[m]=[]
+				d[m].append(filename)
+		else:
+			ERRORFILE.write(filename + '\n')	    # Log unreadable files!!
+
+for key,test in d.items():					    # Generate report w/ timestamp
+	OUTFILE.write("-----------------------" + '\n')
+	OUTFILE.write(key)
+	OUTFILE.write("(" + str(len(test)) + ")" + '\n'  )
+	OUTFILE.write("-----------------------" + '\n')
+	for value in d[key]:
+		OUTFILE.write(value + '\n' )
+
