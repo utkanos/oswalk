@@ -1,0 +1,1 @@
+Edit the 'TOP' path to change which path the script crawls. Magic.py must be in the same directory that the oswalk script is in. Credit to ahupp for magic.py (http://github.com/ahupp)
