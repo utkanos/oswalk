@@ -36,4 +36,3 @@ for key,test in d.items():					    # Generate report w/ timestamp
 	OUTFILE.write("-----------------------" + '\n')
 	for value in d[key]:
 		OUTFILE.write(value + '\n' )
-
